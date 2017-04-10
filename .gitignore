@@ -17,6 +17,13 @@ SFML/extlibs/
 *.exe*
 output/*.xml
 
+#references
+!references/sfmlnet-audio-2.dll
+!references/sfmlnet-graphics-2.dll
+!references/sfmlnet-system-2.dll
+!references/sfmlnet-window-2.dll
+
+
 # User-specific files
 *.suo
 *.user
