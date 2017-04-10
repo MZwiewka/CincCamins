@@ -15,10 +15,15 @@ namespace CincCamins
         public int Number;
         public Text NumText;
 
-        public Pawn(int number, Font font)
+        public Pawn(int number, bool player)
         {
+            if (player) FillColor = Color.Green;
+            else FillColor = Color.Red;
+
+            Radius = 50;
+            Player = player;
             Number = number;
-            NumText = new Text(number.ToString(), font)
+            NumText = new Text(number.ToString(), Globals.FONT)
             {
                 Color = Color.Black,
                 CharacterSize = 100,
@@ -29,8 +34,13 @@ namespace CincCamins
             get { return base.Position; }
             set {
                 base.Position = value;
-                NumText.Position = value + new Vector2f(25f, -25f);
+                NumText.Position = value + new Vector2f(25f, -20f);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{(Player ? "Player's" : "Opponent's")} pawn number {Number}: [X = {X}][Y = {Y}] ";
         }
     }
 }

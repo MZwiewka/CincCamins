@@ -18,13 +18,11 @@ namespace CincCamins
         private RenderWindow _renderWindow;
         private Timer _timer;
         private Sprite _board;
-        private Font _font;
 
         public MainForm()
         {
             InitializeComponent();
             
-            _font = new Font("consola.ttf");
             Texture tx = new Texture("Board.png");
             _board = new Sprite(tx);
             
@@ -44,26 +42,21 @@ namespace CincCamins
             _pawns = new List<Pawn>();
             for (int i = 0; i < 5; i++)
             {
-                _pawns.Add(new Pawn(i + 1, _font)
+                _pawns.Add(new Pawn(number: i + 1, player: false)
                 {
-                    Radius = 50,
-                    FillColor = Color.Red,
                     Position = new Vector2f(i * 100, 0),
-                    X = 0,
-                    Y = i,
+                    X = i,
+                    Y = 0,
                 });
             }
 
             for (int i = 0; i < 5; i++)
             {
-                _pawns.Add(new Pawn(i + 1, _font)
+                _pawns.Add(new Pawn(number: i + 1, player: true)
                 {
-                    Player = true,
-                    Radius = 50,
-                    FillColor = Color.Green,
                     Position = new Vector2f(i * 100, 400),
-                    X = 0,
-                    Y = i,
+                    X = i,
+                    Y = 4,
                 });
             }
         }
@@ -84,8 +77,15 @@ namespace CincCamins
         {
             try
             {
-                var pawn = _pawns.Single(p => p.Player && p.Number.ToString().Equals(SelectedPon.Text));
-                pawn.Position -= new Vector2f(100, 0);
+                var pawn = _pawns.Single(p => p.Player == Globals.WHO_IS_PLAYER && p.Number.ToString().Equals(SelectedPon.Text));
+
+                if (pawn.X > 0)
+                {
+                    if (CheckIfCollide(pawn, newX: pawn.X - 1)) return;
+
+                    pawn.Position -= new Vector2f(100, 0);
+                    pawn.X--;
+                }
             }
             catch (Exception)
             {
@@ -96,8 +96,15 @@ namespace CincCamins
         {
             try
             {
-                var pawn = _pawns.Single(p => p.Player && p.Number.ToString().Equals(SelectedPon.Text));
-                pawn.Position -= new Vector2f(0, 100);
+                var pawn = _pawns.Single(p => p.Player == Globals.WHO_IS_PLAYER && p.Number.ToString().Equals(SelectedPon.Text));
+
+                if (pawn.Y > 0)
+                {
+                    if (CheckIfCollide(pawn, newY: pawn.Y - 1)) return;
+
+                    pawn.Position -= new Vector2f(0, 100);
+                    pawn.Y--;
+                }
             }
             catch (Exception)
             {
@@ -108,8 +115,15 @@ namespace CincCamins
         {
             try
             {
-                var pawn = _pawns.Single(p => p.Player && p.Number.ToString().Equals(SelectedPon.Text));
-                pawn.Position += new Vector2f(100, 0);
+                var pawn = _pawns.Single(p => p.Player == Globals.WHO_IS_PLAYER && p.Number.ToString().Equals(SelectedPon.Text));
+
+                if (pawn.X < 4)
+                {
+                    if(CheckIfCollide(pawn, newX: pawn.X + 1)) return;
+
+                    pawn.Position += new Vector2f(100, 0);
+                    pawn.X++;
+                }
             }
             catch (Exception)
             {
@@ -120,12 +134,53 @@ namespace CincCamins
         {
             try
             {
-                var pawn = _pawns.Single(p => p.Player && p.Number.ToString().Equals(SelectedPon.Text));
-                pawn.Position += new Vector2f(0, 100);
+                var pawn = _pawns.Single(p => p.Player == Globals.WHO_IS_PLAYER && p.Number.ToString().Equals(SelectedPon.Text));
+
+                if (pawn.Y < 4)
+                {
+                    if(CheckIfCollide(pawn, newY: pawn.Y + 1)) return;
+
+                    pawn.Position += new Vector2f(0, 100);
+                    pawn.Y++;
+                }
             }
             catch (Exception)
             {
             }
+        }
+
+        private bool CheckIfCollide(Pawn pawn, int? newX = null, int? newY = null)
+        {
+            var x = newX ?? pawn.X;
+            var y = newY ?? pawn.Y;
+
+            if (_pawns.Any(p => p.X == x && p.Y == y)) return true;
+            else return false;
+        }
+
+        private void CheckTable_Click(object sender, EventArgs e)
+        {
+            GenerateFromGameStatus(GenerateGameStatus());
+        }
+
+        private void ChangePlayer_Click(object sender, EventArgs e)
+        {
+            if (Globals.WHO_IS_PLAYER)
+            {
+                WhoIsPlayer.BackColor = System.Drawing.Color.Red;
+                Globals.WHO_IS_PLAYER = false;
+            }
+            else
+            {
+                WhoIsPlayer.BackColor = System.Drawing.Color.Lime;
+                Globals.WHO_IS_PLAYER = true;
+            }
+        }
+
+        private void CountAIMove_Click(object sender, EventArgs e)
+        {
+            var game = MinMaxNamespace.MinMax.CountAIMove(GenerateGameStatus());
+            GenerateFromGameStatus(game);
         }
     }
 }

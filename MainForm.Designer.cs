@@ -34,7 +34,11 @@
             this.MoveDown = new System.Windows.Forms.Button();
             this.MoveRight = new System.Windows.Forms.Button();
             this.MoveLeft = new System.Windows.Forms.Button();
+            this.CheckTable = new System.Windows.Forms.Button();
+            this.ChangePlayer = new System.Windows.Forms.Button();
+            this.WhoIsPlayer = new System.Windows.Forms.Panel();
             this.SFMLRenderControl = new CincCamins.SFMLRenderControl();
+            this.CountAIMove = new System.Windows.Forms.Button();
             this.ButtonsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,6 +121,36 @@
             this.MoveLeft.UseVisualStyleBackColor = true;
             this.MoveLeft.Click += new System.EventHandler(this.Left_Click);
             // 
+            // CheckTable
+            // 
+            this.CheckTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.CheckTable.Location = new System.Drawing.Point(601, 12);
+            this.CheckTable.Name = "CheckTable";
+            this.CheckTable.Size = new System.Drawing.Size(200, 37);
+            this.CheckTable.TabIndex = 2;
+            this.CheckTable.Text = "Sprawdź tablicę";
+            this.CheckTable.UseVisualStyleBackColor = true;
+            this.CheckTable.Click += new System.EventHandler(this.CheckTable_Click);
+            // 
+            // ChangePlayer
+            // 
+            this.ChangePlayer.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.ChangePlayer.Location = new System.Drawing.Point(601, 55);
+            this.ChangePlayer.Name = "ChangePlayer";
+            this.ChangePlayer.Size = new System.Drawing.Size(200, 37);
+            this.ChangePlayer.TabIndex = 3;
+            this.ChangePlayer.Text = "Zmień gracza";
+            this.ChangePlayer.UseVisualStyleBackColor = true;
+            this.ChangePlayer.Click += new System.EventHandler(this.ChangePlayer_Click);
+            // 
+            // WhoIsPlayer
+            // 
+            this.WhoIsPlayer.BackColor = System.Drawing.Color.Lime;
+            this.WhoIsPlayer.Location = new System.Drawing.Point(601, 98);
+            this.WhoIsPlayer.Name = "WhoIsPlayer";
+            this.WhoIsPlayer.Size = new System.Drawing.Size(200, 21);
+            this.WhoIsPlayer.TabIndex = 4;
+            // 
             // SFMLRenderControl
             // 
             this.SFMLRenderControl.BackColor = System.Drawing.SystemColors.ActiveBorder;
@@ -125,11 +159,26 @@
             this.SFMLRenderControl.Size = new System.Drawing.Size(500, 500);
             this.SFMLRenderControl.TabIndex = 0;
             // 
+            // CountAIMove
+            // 
+            this.CountAIMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.CountAIMove.Location = new System.Drawing.Point(601, 475);
+            this.CountAIMove.Name = "CountAIMove";
+            this.CountAIMove.Size = new System.Drawing.Size(200, 37);
+            this.CountAIMove.TabIndex = 5;
+            this.CountAIMove.Text = "Oblicz ruch SI";
+            this.CountAIMove.UseVisualStyleBackColor = true;
+            this.CountAIMove.Click += new System.EventHandler(this.CountAIMove_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(874, 522);
+            this.Controls.Add(this.CountAIMove);
+            this.Controls.Add(this.WhoIsPlayer);
+            this.Controls.Add(this.ChangePlayer);
+            this.Controls.Add(this.CheckTable);
             this.Controls.Add(this.ButtonsPanel);
             this.Controls.Add(this.SFMLRenderControl);
             this.Name = "MainForm";
@@ -149,6 +198,10 @@
         private System.Windows.Forms.Button MoveDown;
         private System.Windows.Forms.Button MoveRight;
         private System.Windows.Forms.Button MoveLeft;
+        private System.Windows.Forms.Button CheckTable;
+        private System.Windows.Forms.Button ChangePlayer;
+        private System.Windows.Forms.Panel WhoIsPlayer;
+        private System.Windows.Forms.Button CountAIMove;
     }
 }
 
