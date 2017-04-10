@@ -9,7 +9,9 @@ namespace CincCamins
     public class GameStatus
     {
         public PawnStatus[,] Pawns = new PawnStatus[5, 5];
-        
+        public int PlayerBeatings;
+        public int OpponentBeatings;
+
         public GameStatus(List<Pawn> gameStatus)
         {
             gameStatus.ForEach(p =>

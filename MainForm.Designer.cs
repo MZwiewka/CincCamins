@@ -39,6 +39,7 @@
             this.WhoIsPlayer = new System.Windows.Forms.Panel();
             this.SFMLRenderControl = new CincCamins.SFMLRenderControl();
             this.CountAIMove = new System.Windows.Forms.Button();
+            this.CheckBeatings = new System.Windows.Forms.Button();
             this.ButtonsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -162,7 +163,7 @@
             // CountAIMove
             // 
             this.CountAIMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.CountAIMove.Location = new System.Drawing.Point(601, 475);
+            this.CountAIMove.Location = new System.Drawing.Point(601, 430);
             this.CountAIMove.Name = "CountAIMove";
             this.CountAIMove.Size = new System.Drawing.Size(200, 37);
             this.CountAIMove.TabIndex = 5;
@@ -170,11 +171,23 @@
             this.CountAIMove.UseVisualStyleBackColor = true;
             this.CountAIMove.Click += new System.EventHandler(this.CountAIMove_Click);
             // 
+            // CheckBeatings
+            // 
+            this.CheckBeatings.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.CheckBeatings.Location = new System.Drawing.Point(601, 473);
+            this.CheckBeatings.Name = "CheckBeatings";
+            this.CheckBeatings.Size = new System.Drawing.Size(200, 37);
+            this.CheckBeatings.TabIndex = 6;
+            this.CheckBeatings.Text = "Znajdź bicia";
+            this.CheckBeatings.UseVisualStyleBackColor = true;
+            this.CheckBeatings.Click += new System.EventHandler(this.CheckBeatings_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(874, 522);
+            this.Controls.Add(this.CheckBeatings);
             this.Controls.Add(this.CountAIMove);
             this.Controls.Add(this.WhoIsPlayer);
             this.Controls.Add(this.ChangePlayer);
@@ -202,6 +215,7 @@
         private System.Windows.Forms.Button ChangePlayer;
         private System.Windows.Forms.Panel WhoIsPlayer;
         private System.Windows.Forms.Button CountAIMove;
+        private System.Windows.Forms.Button CheckBeatings;
     }
 }
 

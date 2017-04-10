@@ -182,5 +182,11 @@ namespace CincCamins
             var game = MinMaxNamespace.MinMax.CountAIMove(GenerateGameStatus());
             GenerateFromGameStatus(game);
         }
+
+        private void CheckBeatings_Click(object sender, EventArgs e)
+        {
+            var game = MinMaxNamespace.MinMax.CheckBeatings(GenerateGameStatus());
+            GenerateFromGameStatus(game);
+        }
     }
 }
