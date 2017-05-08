@@ -24,6 +24,12 @@ namespace CincCamins
             });
         }
 
+        public GameStatus(GameStatus game) : this(game.Pawns.ToEnumerable<Pawn>().ToList())
+        {
+            PlayerBeatings = 0;
+            OpponentBeatings = 0;
+        }
+
         public class PawnStatus
         {
             public bool Player;

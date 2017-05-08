@@ -14,6 +14,26 @@ namespace CincCamins.MinMaxNamespace
         /// </summary>
         public static GameStatus CountAIMove(GameStatus game)
         {
+            // tu w zasadzie jebutna pętla na wszystkie korzenie drzewa
+            /// 1. Sprawdzamy jakie są ruchy
+            /// 2. Przetwarzamy je z użyciem CheckBeatings
+            // koniec pętli 
+            
+            /// 3. Odpalamy minimaksa, który ocenia najlepszy ruch
+            /// 4. Zwracamy GameStatus określający najlepszy ruch (najlepszy korzeń drzewa min-max)
+
+
+            //Przykłądy kodu:
+
+            /// "Ruch gracza w dół":
+            //var pionek = game.Pawns[0, 0];
+            //game.Pawns[0, 0] = null;
+            //game.Pawns[0, 1] = pionek;
+
+            /// kopiowanie GameStatus:
+            //var newGameRoot = new GameStatus(game);
+
+
             return game;
         }
 
