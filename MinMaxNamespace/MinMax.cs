@@ -18,23 +18,81 @@ namespace CincCamins.MinMaxNamespace
             /// 1. Sprawdzamy jakie są ruchy
             /// 2. Przetwarzamy je z użyciem CheckBeatings
             // koniec pętli 
-            
+
             /// 3. Odpalamy minimaksa, który ocenia najlepszy ruch
             /// 4. Zwracamy GameStatus określający najlepszy ruch (najlepszy korzeń drzewa min-max)
 
 
             //Przykłądy kodu:
 
-            /// "Ruch gracza w dół":
-            //var pionek = game.Pawns[0, 0];
-            //game.Pawns[0, 0] = null;
-            //game.Pawns[0, 1] = pionek;
+            var moves = FindMovesForRoot(game, false);
+
+            foreach (var move in moves)
+            {
+                Console.WriteLine($"{move}");
+            }
 
             /// kopiowanie GameStatus:
             //var newGameRoot = new GameStatus(game);
 
 
             return game;
+        }
+
+        public static List<GameStatus> FindMovesForRoot(GameStatus root, bool isPlayer)
+        {
+            var p = root.Pawns;
+            var result = new List<GameStatus>();
+
+            for (int x = 0; x < 5; x++)
+            {
+                for (int y = 0; y < 5; y++)
+                {
+                    // Jeśli null lub należy do innego gracza to jedziemy dalej
+                    if (p[x, y] == null || p[x, y].Player != isPlayer) continue;
+
+                    // Sprawdzanie ruchu w lewo
+                    if (x > 0 && p[x - 1, y] == null)
+                    {
+                        var newRoot = new GameStatus(root);
+                        newRoot.Pawns[x - 1, y] = p[x, y];
+                        newRoot.Pawns[x, y] = null;
+
+                        result.Add(newRoot);
+                    }
+
+                    // Sprawdzanie ruchu w prawo
+                    if (x < 4 && p[x + 1, y] == null)
+                    {
+                        var newRoot = new GameStatus(root);
+                        newRoot.Pawns[x + 1, y] = p[x, y];
+                        newRoot.Pawns[x, y] = null;
+
+                        result.Add(newRoot);
+                    }
+
+                    // Sprawdzanie ruchu do góry
+                    if (y > 0 && p[x, y - 1] == null)
+                    {
+                        var newRoot = new GameStatus(root);
+                        newRoot.Pawns[x, y - 1] = p[x, y];
+                        newRoot.Pawns[x, y] = null;
+
+                        result.Add(newRoot);
+                    }
+
+                    // Sprawdzanie ruchu w dół
+                    if (y < 4 && p[x, y + 1] == null)
+                    {
+                        var newRoot = new GameStatus(root);
+                        newRoot.Pawns[x, y + 1] = p[x, y];
+                        newRoot.Pawns[x, y] = null;
+
+                        result.Add(newRoot);
+                    }
+                }
+            }
+            return result;
         }
 
         public static GameStatus CheckBeatings(GameStatus game)

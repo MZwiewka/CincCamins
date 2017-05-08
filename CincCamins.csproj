@@ -75,6 +75,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MinMaxNamespace\MinMax.cs" />
+    <Compile Include="MinMaxNamespace\TreeRoot.cs" />
     <Compile Include="Pawn.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
