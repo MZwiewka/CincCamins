@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CincCamins.MinMaxNamespace;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,34 +10,119 @@ namespace CincCamins.MinMaxNamespace
 {
     public class MinMax
     {
+        public static TreeNode<GameStatus> root = null;
         /// <summary>
         /// Proteza :>
         /// </summary>
         public static GameStatus CountAIMove(GameStatus game)
         {
-            // tu w zasadzie jebutna pętla na wszystkie korzenie drzewa
-            /// 1. Sprawdzamy jakie są ruchy
-            /// 2. Przetwarzamy je z użyciem CheckBeatings
-            // koniec pętli 
-
+            root = new TreeNode<GameStatus>(game);
+            BuildTree(root, false, 0);
+            var g = MiniMax(root, 3, true);
             /// 3. Odpalamy minimaksa, który ocenia najlepszy ruch
             /// 4. Zwracamy GameStatus określający najlepszy ruch (najlepszy korzeń drzewa min-max)
 
+            /// kopiowanie GameStatus:
+            var newGameRoot = new GameStatus(g.Data);
+            return newGameRoot;
+        }
 
-            //Przykłądy kodu:
+        static Random rnd = new Random();
 
-            var moves = FindMovesForRoot(game, false);
+        /*public static GameStatus MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
+        {
+            if (depth == 0 || game.Children.Count() == 0)
+            {
+                return game.Data;
+            }
+            if (maximizingPlayer == true)
+            {
+                int bestValue = -10;
+                GameStatus best = null;
+                foreach (var child in game.Children)
+                {
+                    var v = MiniMax(child, --depth, false);
+                    if (bestValue < v.Value)
+                    {
+                        best = v;
+                    }
+                    //bestValue = Math.Max(bestValue.Value, v.Value);
+                }
+                return best;
+            }
+            else
+            {
+                int bestValue = 10;
+                GameStatus best = null;
+                foreach (var child in game.Children)
+                {
+                    var v = MiniMax(child, --depth, true);
+                    if (bestValue > v.Value)
+                    {
+                        best = v;
+                    }
+                    //bestValue = Math.Min(bestValue.Value, v.Value);
+                }
+                return best;
+            }
+        }*/
 
+        public static TreeNode<GameStatus> MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
+        {
+            if (depth == 0 || game.Children.Count() == 0)
+            {
+                return game;
+            }
+            if (maximizingPlayer == true)
+            {
+                TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                foreach (var child in game.Children)
+                {
+                    var v = MiniMax(child, --depth, false);
+                    if (v.Data.PlayerBeatings == 1)
+                    {
+                        bestValue = v;
+                    }
+                    else if (bestValue.Data.PlayerBeatings < 1 && v.Data.PlayerBeatings == 0)
+                    {
+                        int r= rnd.Next(game.Children.Count);
+                        bestValue = game.Children.ElementAt(r);
+                    }
+                    //bestValue.OpponentBeatings = Math.Max(bestValue.OpponentBeatings, v.OpponentBeatings);
+                }
+                return bestValue;
+            }
+            else
+            {
+                TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                foreach (var child in game.Children)
+                {
+                    var v = MiniMax(child, --depth, true);
+                    if(v.Data.PlayerBeatings == 0)
+                    {
+                        bestValue = v;
+                    }
+
+                    //bestValue.OpponentBeatings = Math.Min(bestValue.OpponentBeatings, v.OpponentBeatings);
+                }
+                return bestValue;
+            }
+        }
+
+        public static void BuildTree(TreeNode<GameStatus> r, bool x, int level)
+        {
+            if (level == 6)
+                return;
+            var moves = FindMovesForRoot(r.Data, x);
             foreach (var move in moves)
             {
-                Console.WriteLine($"{move}");
+                r.AddChild(CheckBeatings(move));
             }
-
-            /// kopiowanie GameStatus:
-            //var newGameRoot = new GameStatus(game);
-
-
-            return game;
+            ++level;
+            foreach (var child in r.Children)
+            {
+                BuildTree(child, !x, level);
+            }
         }
 
         public static List<GameStatus> FindMovesForRoot(GameStatus root, bool isPlayer)
@@ -162,7 +248,23 @@ namespace CincCamins.MinMaxNamespace
             }
 
             game.PlayerBeatings = beatings.Count(b => b.Player);
+            if(game.PlayerBeatings==1)
+            {
+                game.Value += 5;
+            }
+            else if (game.PlayerBeatings==2)
+            {
+                game.Value += 10;
+            }
             game.OpponentBeatings = beatings.Count(b => !b.Player);
+            if (game.OpponentBeatings == 1)
+            {
+                game.Value -= 5;
+            }
+            else if (game.OpponentBeatings == 2)
+            {
+                game.Value -= 10;
+            }
             return game;
         }
 

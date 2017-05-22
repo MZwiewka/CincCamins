@@ -11,6 +11,7 @@ namespace CincCamins
         public PawnStatus[,] Pawns = new PawnStatus[5, 5];
         public int PlayerBeatings;
         public int OpponentBeatings;
+        public int Value;
 
         public GameStatus(List<Pawn> gameStatus)
         {
@@ -28,6 +29,7 @@ namespace CincCamins
         {
             PlayerBeatings = 0;
             OpponentBeatings = 0;
+            Value = 0;
 
             for (int x = 0; x < 5; x++)
             {
