@@ -18,7 +18,7 @@ namespace CincCamins.MinMaxNamespace
         {
             root = new TreeNode<GameStatus>(game);
             BuildTree(root, false, 0);
-            var g = MiniMax(root, 3, true);
+            var g = MiniMax(root, 6, true);
             /// 3. Odpalamy minimaksa, który ocenia najlepszy ruch
             /// 4. Zwracamy GameStatus określający najlepszy ruch (najlepszy korzeń drzewa min-max)
 
@@ -38,10 +38,11 @@ namespace CincCamins.MinMaxNamespace
             if (maximizingPlayer == true)
             {
                 int bestValue = -10;
-                GameStatus best = null;
+                GameStatus best = game.Data;
+                --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, --depth, false);
+                    var v = MiniMax(child, depth, false);
                     if (bestValue < v.Value)
                     {
                         best = v;
@@ -53,10 +54,11 @@ namespace CincCamins.MinMaxNamespace
             else
             {
                 int bestValue = 10;
-                GameStatus best = null;
+                GameStatus best = game.Data;
+                --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, --depth, true);
+                    var v = MiniMax(child, depth, true);
                     if (bestValue > v.Value)
                     {
                         best = v;
@@ -76,9 +78,10 @@ namespace CincCamins.MinMaxNamespace
             if (maximizingPlayer == true)
             {
                 TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, --depth, false);
+                    var v = MiniMax(child, depth, false);
                     if (v.Data.PlayerBeatings == 1)
                     {
                         bestValue = v;
@@ -95,9 +98,10 @@ namespace CincCamins.MinMaxNamespace
             else
             {
                 TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, --depth, true);
+                    var v = MiniMax(child, depth, true);
                     if(v.Data.PlayerBeatings == 0)
                     {
                         bestValue = v;
