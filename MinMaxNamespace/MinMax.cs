@@ -210,7 +210,7 @@ namespace CincCamins.MinMaxNamespace
             // [O,X,X, , ]
             if (pawns[0].Y == 0 && pawns[0].Player == !x &&
                 pawns[1].Y == 1 && pawns[1].Player == x &&
-                pawns[2].X == 2 && pawns[2].Player == x)
+                pawns[2].Y == 2 && pawns[2].Player == x)
             {
                 return pawns[0];
             }
