@@ -14,60 +14,22 @@ namespace CincCamins.MinMaxNamespace
         /// <summary>
         /// Proteza :>
         /// </summary>
+        /// 
         public static GameStatus CountAIMove(GameStatus game)
         {
             root = new TreeNode<GameStatus>(game);
             BuildTree(root, false, 0);
-            var g = MiniMax(root, 6, true);
-            /// 3. Odpalamy minimaksa, który ocenia najlepszy ruch
-            /// 4. Zwracamy GameStatus określający najlepszy ruch (najlepszy korzeń drzewa min-max)
+            var g = MiniMax(root, 7, true);
 
-            /// kopiowanie GameStatus:
+            while (g.Parent != null && g.Parent.Parent != null)
+                g = g.Parent;
+
             var newGameRoot = new GameStatus(g.Data);
             return newGameRoot;
         }
 
         static Random rnd = new Random();
-
-        /*public static GameStatus MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
-        {
-            if (depth == 0 || game.Children.Count() == 0)
-            {
-                return game.Data;
-            }
-            if (maximizingPlayer == true)
-            {
-                int bestValue = -10;
-                GameStatus best = game.Data;
-                --depth;
-                foreach (var child in game.Children)
-                {
-                    var v = MiniMax(child, depth, false);
-                    if (bestValue < v.Value)
-                    {
-                        best = v;
-                    }
-                    //bestValue = Math.Max(bestValue.Value, v.Value);
-                }
-                return best;
-            }
-            else
-            {
-                int bestValue = 10;
-                GameStatus best = game.Data;
-                --depth;
-                foreach (var child in game.Children)
-                {
-                    var v = MiniMax(child, depth, true);
-                    if (bestValue > v.Value)
-                    {
-                        best = v;
-                    }
-                    //bestValue = Math.Min(bestValue.Value, v.Value);
-                }
-                return best;
-            }
-        }*/
+        private static int bestDepth = 0;
 
         public static TreeNode<GameStatus> MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
         {
@@ -77,41 +39,42 @@ namespace CincCamins.MinMaxNamespace
             }
             if (maximizingPlayer == true)
             {
-                TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                int bestValue = -100;
+                TreeNode<GameStatus> best = game;
                 --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, depth, false);
-                    if (v.Data.PlayerBeatings == 1)
+                    child.Data.Value += game.Data.Value;
+                    var v = MiniMax(child, depth, true);
+                    if (bestValue < v.Data.Value )
                     {
-                        bestValue = v;
+                        bestDepth = depth;
+                        best = v;
+                        bestValue = v.Data.Value;
                     }
-                    else if (bestValue.Data.PlayerBeatings < 1 && v.Data.PlayerBeatings == 0)
-                    {
-                        int r= rnd.Next(game.Children.Count);
-                        bestValue = game.Children.ElementAt(r);
-                    }
-                    //bestValue.OpponentBeatings = Math.Max(bestValue.OpponentBeatings, v.OpponentBeatings);
                 }
-                return bestValue;
+                return best;
             }
             else
             {
-                TreeNode<GameStatus> bestValue = game.Children.ElementAt(0);
+                int bestValue = 100;
+                TreeNode<GameStatus> best = game;
                 --depth;
                 foreach (var child in game.Children)
                 {
-                    var v = MiniMax(child, depth, true);
-                    if(v.Data.PlayerBeatings == 0)
+                    child.Data.Value += game.Data.Value;
+                    var v = MiniMax(child, depth, false);
+                    if (bestValue > v.Data.Value)
                     {
-                        bestValue = v;
+                        bestDepth = depth;
+                        best = v;
+                        bestValue = v.Data.Value;
                     }
-
-                    //bestValue.OpponentBeatings = Math.Min(bestValue.OpponentBeatings, v.OpponentBeatings);
                 }
-                return bestValue;
+                return best;
             }
         }
+
 
         public static void BuildTree(TreeNode<GameStatus> r, bool x, int level)
         {
@@ -147,7 +110,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x - 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value = -1;
                         result.Add(newRoot);
                     }
 
@@ -157,7 +120,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x + 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value = -1;
                         result.Add(newRoot);
                     }
 
@@ -167,7 +130,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y - 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value = -1;
                         result.Add(newRoot);
                     }
 
@@ -177,7 +140,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y + 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value = -1;
                         result.Add(newRoot);
                     }
                 }
@@ -263,11 +226,11 @@ namespace CincCamins.MinMaxNamespace
             game.OpponentBeatings = beatings.Count(b => !b.Player);
             if (game.OpponentBeatings == 1)
             {
-                game.Value -= 5;
+                game.Value -= 10;
             }
             else if (game.OpponentBeatings == 2)
             {
-                game.Value -= 10;
+                game.Value -= 20;
             }
             return game;
         }
