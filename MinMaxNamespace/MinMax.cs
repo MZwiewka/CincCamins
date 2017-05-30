@@ -18,18 +18,17 @@ namespace CincCamins.MinMaxNamespace
         public static GameStatus CountAIMove(GameStatus game)
         {
             root = new TreeNode<GameStatus>(game);
+
             BuildTree(root, false, 0);
+            GetValue(root, 0);
             var g = MiniMax(root, 7, true);
 
-            while (g.Parent != null && g.Parent.Parent != null)
+            while (g.Parent.Parent != null)
                 g = g.Parent;
 
             var newGameRoot = new GameStatus(g.Data);
             return newGameRoot;
         }
-
-        static Random rnd = new Random();
-        private static int bestDepth = 0;
 
         public static TreeNode<GameStatus> MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
         {
@@ -39,16 +38,15 @@ namespace CincCamins.MinMaxNamespace
             }
             if (maximizingPlayer == true)
             {
-                int bestValue = -100;
+                int bestValue = -1001;
                 TreeNode<GameStatus> best = game;
                 --depth;
                 foreach (var child in game.Children)
                 {
                     child.Data.Value += game.Data.Value;
                     var v = MiniMax(child, depth, true);
-                    if (bestValue < v.Data.Value )
+                    if (bestValue < v.Data.Value)
                     {
-                        bestDepth = depth;
                         best = v;
                         bestValue = v.Data.Value;
                     }
@@ -57,7 +55,7 @@ namespace CincCamins.MinMaxNamespace
             }
             else
             {
-                int bestValue = 100;
+                int bestValue = 1001;
                 TreeNode<GameStatus> best = game;
                 --depth;
                 foreach (var child in game.Children)
@@ -66,7 +64,6 @@ namespace CincCamins.MinMaxNamespace
                     var v = MiniMax(child, depth, false);
                     if (bestValue > v.Data.Value)
                     {
-                        bestDepth = depth;
                         best = v;
                         bestValue = v.Data.Value;
                     }
@@ -75,6 +72,79 @@ namespace CincCamins.MinMaxNamespace
             }
         }
 
+        public static void GetValue(TreeNode<GameStatus> game, int z)
+        {
+            if (z == 6)
+                return;
+            int ziom = 0;
+            int ziom2 = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (game.Data.Pawns[i, j] != null)
+                    {
+                        if (game.Data.Pawns[i, j].Player == true)
+                        {
+                            ziom++;
+                        }
+                        else
+                        {
+                            ziom2++;
+                        }
+                    }
+                }
+            }
+            if (game.Data.PlayerBeatings == 0)
+            {
+                game.Data.Value = -1;
+            }
+            if (game.Data.PlayerBeatings == 1 && z==1)
+            {
+                game.Data.Value = 20;
+            }
+            else if (game.Data.PlayerBeatings == 2 && z==1)
+            {
+                game.Data.Value = 40;
+            }
+            if (game.Data.PlayerBeatings == 1 && z == 3)
+            {
+                game.Data.Value = 5;
+            }
+            else if (game.Data.PlayerBeatings == 2 && z == 3)
+            {
+                game.Data.Value = 10;
+            }
+            if (game.Data.PlayerBeatings == 1 && z == 5)
+            {
+                game.Data.Value = 2;
+            }
+            else if (game.Data.PlayerBeatings == 2 && z == 5)
+            {
+                game.Data.Value = 4;
+            }
+            if (ziom == 0)
+            {
+                game.Data.Value = 1000;
+            }
+            if (ziom2 == 0)
+            {
+                game.Data.Value = -1000;
+            }
+            if (game.Data.OpponentBeatings == 1)
+            {
+                game.Data.Value = -50;
+            }
+            else if (game.Data.OpponentBeatings == 2)
+            {
+                game.Data.Value = -100;
+            }
+            ++z;
+            foreach (var child in game.Children)
+            {
+                GetValue(child, z);
+            }   
+        }
 
         public static void BuildTree(TreeNode<GameStatus> r, bool x, int level)
         {
@@ -110,7 +180,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x - 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-                        newRoot.Value = -1;
+
                         result.Add(newRoot);
                     }
 
@@ -120,7 +190,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x + 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-                        newRoot.Value = -1;
+
                         result.Add(newRoot);
                     }
 
@@ -130,7 +200,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y - 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-                        newRoot.Value = -1;
+
                         result.Add(newRoot);
                     }
 
@@ -140,7 +210,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y + 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-                        newRoot.Value = -1;
+
                         result.Add(newRoot);
                     }
                 }
@@ -215,23 +285,8 @@ namespace CincCamins.MinMaxNamespace
             }
 
             game.PlayerBeatings = beatings.Count(b => b.Player);
-            if(game.PlayerBeatings==1)
-            {
-                game.Value += 5;
-            }
-            else if (game.PlayerBeatings==2)
-            {
-                game.Value += 10;
-            }
             game.OpponentBeatings = beatings.Count(b => !b.Player);
-            if (game.OpponentBeatings == 1)
-            {
-                game.Value -= 10;
-            }
-            else if (game.OpponentBeatings == 2)
-            {
-                game.Value -= 20;
-            }
+
             return game;
         }
 
