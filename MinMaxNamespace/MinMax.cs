@@ -22,29 +22,30 @@ namespace CincCamins.MinMaxNamespace
             BuildTree(root, false, 0);
             GetValue(root, 0);
             var g = MiniMax(root, 7, true);
-
+            int zz = 0;
             while (g.Parent.Parent != null)
-                g = g.Parent;
+                 g = g.Parent;
 
             var newGameRoot = new GameStatus(g.Data);
             return newGameRoot;
         }
 
+        static Random rnd = new Random();
         public static TreeNode<GameStatus> MiniMax(TreeNode<GameStatus> game, int depth, bool maximizingPlayer)
         {
-            if (depth == 0 || game.Children.Count() == 0)
+            if (depth == 0 ||  game.Children.Count() == 0)
             {
                 return game;
             }
             if (maximizingPlayer == true)
             {
-                int bestValue = -1001;
+                int bestValue = -10000;
                 TreeNode<GameStatus> best = game;
                 --depth;
+
                 foreach (var child in game.Children)
                 {
-                    child.Data.Value += game.Data.Value;
-                    var v = MiniMax(child, depth, true);
+                    var v = MiniMax(child, depth, false);
                     if (bestValue < v.Data.Value)
                     {
                         best = v;
@@ -55,13 +56,12 @@ namespace CincCamins.MinMaxNamespace
             }
             else
             {
-                int bestValue = 1001;
+                int bestValue = 10000;
                 TreeNode<GameStatus> best = game;
                 --depth;
                 foreach (var child in game.Children)
                 {
-                    child.Data.Value += game.Data.Value;
-                    var v = MiniMax(child, depth, false);
+                    var v = MiniMax(child, depth, true);
                     if (bestValue > v.Data.Value)
                     {
                         best = v;
@@ -74,10 +74,12 @@ namespace CincCamins.MinMaxNamespace
 
         public static void GetValue(TreeNode<GameStatus> game, int z)
         {
-            if (z == 6)
-                return;
-            int ziom = 0;
-            int ziom2 = 0;
+        if(game.Parent!=null)
+            {
+                game.Data.Value += game.Parent.Data.Value;
+            }
+            int opponentPawns = 0;
+            int playerPawns = 0;
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 5; j++)
@@ -86,58 +88,74 @@ namespace CincCamins.MinMaxNamespace
                     {
                         if (game.Data.Pawns[i, j].Player == true)
                         {
-                            ziom++;
+                            opponentPawns++;
                         }
                         else
                         {
-                            ziom2++;
+                            playerPawns++;
                         }
                     }
                 }
             }
-            if (game.Data.PlayerBeatings == 0)
+    /* if(game.Data.PlayerBeatings == 0 && z>0)
             {
-                game.Data.Value = -1;
-            }
+                game.Data.Value += -1;
+            }*/
             if (game.Data.PlayerBeatings == 1 && z==1)
             {
-                game.Data.Value = 20;
+                game.Data.Value += 50;
             }
             else if (game.Data.PlayerBeatings == 2 && z==1)
             {
-                game.Data.Value = 40;
+                game.Data.Value += 100;
             }
             if (game.Data.PlayerBeatings == 1 && z == 3)
             {
-                game.Data.Value = 5;
+                game.Data.Value += 2;
             }
             else if (game.Data.PlayerBeatings == 2 && z == 3)
             {
-                game.Data.Value = 10;
+                game.Data.Value += 4;
             }
             if (game.Data.PlayerBeatings == 1 && z == 5)
             {
-                game.Data.Value = 2;
+                game.Data.Value += 1;
             }
             else if (game.Data.PlayerBeatings == 2 && z == 5)
             {
-                game.Data.Value = 4;
+                game.Data.Value += 2;
             }
-            if (ziom == 0)
+            if (opponentPawns == 0)
             {
-                game.Data.Value = 1000;
+                game.Data.Value += 1000;
             }
-            if (ziom2 == 0)
+            if (playerPawns == 0)
             {
-                game.Data.Value = -1000;
+                game.Data.Value += -1000;
             }
-            if (game.Data.OpponentBeatings == 1)
+            if (game.Data.OpponentBeatings == 1 && (z==2 || z==1))
             {
-                game.Data.Value = -50;
+                game.Data.Value += -200;
             }
-            else if (game.Data.OpponentBeatings == 2)
+            else if (game.Data.OpponentBeatings == 2 && (z == 2 || z == 1))
             {
-                game.Data.Value = -100;
+                game.Data.Value += -400;
+            }
+            if (game.Data.OpponentBeatings == 1 && (z == 4|| z == 3))
+            {
+                game.Data.Value += -100;
+            }
+            else if (game.Data.OpponentBeatings == 2 && (z == 4 || z == 3))
+            {
+                game.Data.Value += -200;
+            }
+            if (game.Data.OpponentBeatings == 1 && (z == 6 || z == 7))
+            {
+                game.Data.Value += -50;
+            }
+            else if (game.Data.OpponentBeatings == 2 && (z == 2 || z == 7))
+            {
+                game.Data.Value += -100;
             }
             ++z;
             foreach (var child in game.Children)
@@ -180,7 +198,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x - 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value += 1;
                         result.Add(newRoot);
                     }
 
@@ -190,7 +208,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x + 1, y] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value += 1;
                         result.Add(newRoot);
                     }
 
@@ -200,7 +218,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y - 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value += 1;
                         result.Add(newRoot);
                     }
 
@@ -210,7 +228,7 @@ namespace CincCamins.MinMaxNamespace
                         var newRoot = new GameStatus(root);
                         newRoot.Pawns[x, y + 1] = p[x, y];
                         newRoot.Pawns[x, y] = null;
-
+                        newRoot.Value += 2;
                         result.Add(newRoot);
                     }
                 }
